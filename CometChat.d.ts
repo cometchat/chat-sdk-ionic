@@ -341,6 +341,14 @@ export namespace CometChat {
         */
     export function getGroup(guid: any): Promise<{}>;
     /**
+        * function to get all the joined groups of logged in User
+        *
+        * @static
+        * @returns Promise<any>
+        * @memberof CometChat
+        */
+    export function getGroups(): Promise<any>;
+    /**
         * function to join the exiting group group.
         * can be use to join the public,private and password groups.
         *
@@ -575,7 +583,7 @@ export namespace CometChat {
         * @returns
         * @memberof CometChat
         */
-    export function getAppSettings(): Promise<{}>;
+    export function getAppSettings(): Promise<any>;
     /**
         * Clears the authtoken from server and clears the local cache.
         *
