@@ -726,6 +726,7 @@ export namespace CometChat {
     */
     export class BaseMessage implements Message {
         protected id?: number;
+        protected conversationId?: string;
         protected muid?: string;
         protected sender?: Me | any;
         protected receiver?: string;
@@ -745,10 +746,12 @@ export namespace CometChat {
         protected editedAt: number;
         protected editedBy: string;
         protected deletedAt: number;
-        protected deletedBy: String;
+        protected deletedBy: string;
         constructor(receiver: string, messageType: string, receiverType: string, category: string);
         getId(): number;
         setId(value: number): void;
+        getConversationId(): string;
+        setConversationId(value: string): void;
         getMuid(): string;
         setMuid(value: string): void;
         getSender(): User;
@@ -778,7 +781,10 @@ export namespace CometChat {
         getEditedAt(): number;
         setEditedBy(editedBy: string): void;
         getEditedBy(): void;
-        setDeletedAt(): number;
+        setDeletedAt(deletedAt: number): void;
+        getDeletedAt(): number;
+        setDeletedBy(deletedBy: string): void;
+        getDeletedBy(): string;
     }
 
     export class TextMessage extends BaseMessage implements Message {
@@ -1996,6 +2002,7 @@ export namespace CometChat {
         getTimestamp(): string;
         setTimestamp(timestamp: string): void;
         setReadAt(readAt: string): void;
+        getReadAt(): string;
         getReceivedAt(): string;
         setDeliveredAt(deliveredAt: string): void;
         getDeliveredAt(): string;
