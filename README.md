@@ -36,7 +36,7 @@ First, install via npm
 `Shell`
 
 ```shell
-npm install @cometchat-pro/cordova-ionic-chat@2.0.4 --save
+npm install @cometchat-pro/cordova-ionic-chat@2.0.5 --save
 ```
 
 Then, import the `CometChat` object wherever you want to use CometChat
