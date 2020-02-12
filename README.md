@@ -33,18 +33,23 @@ This guide demonstrates how to add chat to a Javascript application using CometC
 ### NPM
 First, install via npm
 
-`Shell`
-
-```shell
-npm install @cometchat-pro/cordova-ionic-chat@2.0.5 --save
+```
+npm install @cometchat-pro/cordova-ionic-chat@2.0.6 --save
 ```
 
 Then, import the `CometChat` object wherever you want to use CometChat
 
-`JavaScript`
-
-```Javascript 
-import { CometChat } from "@cometchat-pro/cordova-ionic-chat" 
+```
+import { CometChat } from "@cometchat-pro/cordova-ionic-chat"
 ```
 
-To learn more, please refer to our Javascript Developer Documentation: <a href="https://prodocs.cometchat.com/v2.0/docs/cordova-ionic-quick-start">Documentation</a>
+### HTML (via CDN)
+Include the CometChat Javascript library in your HTML code
+
+For v2:
+
+```
+<script type="text/javascript" src="https://unpkg.com/@cometchat-pro/cordova-ionic-chat@2.0.6/CometChat.js"></script>
+```
+
+To learn more, please refer to our Documentation: <a href="https://prodocs.cometchat.com/v2.0/docs/cordova-ionic-quick-start">Documentation</a>
