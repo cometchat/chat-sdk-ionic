@@ -300,6 +300,25 @@ export namespace CometChat {
         * User related functions provided by CometChat class                 *
         *--------------------------------------------------------------------**/
     /**
+	 * function to create user.
+	 *
+	 * @static
+	 * @param {User} user, authOnly apiKey
+	 * @returns Promise<User>
+	 * @memberof CometChat
+	 */
+    export function createUser(user: User | any, apiKey: string): Promise<User>;
+
+    /**
+	 *
+	 * function to update the already existing user and returns the result with updated user
+	 * @param {User} user, authOnly apiKey
+	 * @returns Promise<User>
+	 * @memberof CometChat
+	 */
+    export function updateUser(user: User | any, apiKey: string): Promise<User>;
+    
+    /**
         * function to get the information for the uid provided as an argument
         * @static
         * @param {string} uid
@@ -535,13 +554,7 @@ export namespace CometChat {
     /**-------------------------------------------------------------------------------------------------------*
         * Events listeners setting and removing	.																  *
         *--------------------------------------------------------------------------------------------------------**/
-    /**
-        * It will add the MessgeEventListener to list of the MessageEventListeners.
-        *
-        * @param {string} name
-        * @param {Function} callback
-        * @memberof CometChat
-        */
+       
     export function addMessageListener(name: string, messageEventListener: MessageListener): void;
     /**
         * It will remove the MessgeEventListener from the list of the MessageEventListeners.
@@ -689,12 +702,12 @@ export namespace CometChat {
         setConversationType(conversationType: string): void;
         setLastMessage(lastMessage: TextMessage | MediaMessage | CustomMessage | any): void;
         setConversationWith(conversationWith: User | Group): void;
-        setUnreadMessageCount(unreadMessageCount: number | any): void;
+        setUnreadMessageCount(unreadMessageCount: number): void;
         getConversationId(): string;
         getConversationType(): string;
         getLastMessage(): TextMessage | MediaMessage | CustomMessage | any;
         getConversationWith(): User | Group;
-        getUnreadMessageCount(): number | any;
+        getUnreadMessageCount(): number;
         constructor(conversationId: string, conversationType: string, lastMessage: TextMessage | MediaMessage | CustomMessage | any, conversationWith: User | Group, unreadMessageCount: number | any)
     }
 
@@ -1431,7 +1444,12 @@ export namespace CometChat {
         getJoinedAt(): string;
         setJoinedAt(joinedAt: string): void;
     }
-
+    export class ConnectionListener {
+        onConnected?: Function;
+        inConnecting?: Function;
+        onDisconnected?: Function;
+        constructor(...args: any[]);
+    }
     export class MessageListener {
         onAction?: Function;
         onTextMessageReceived?: Function;
