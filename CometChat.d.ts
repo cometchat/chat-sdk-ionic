@@ -643,11 +643,11 @@ export namespace CometChat {
         */
     export function addLoginListener(name: string, loginEventListenerHandler: LoginListener): void;
     /**
-         * It will remove the LoginEventListener from the list of the LoginEventListeners.
-         *
-         * @param {string} name
-         * @memberof CometChat
-         */
+        * It will remove the LoginEventListener from the list of the LoginEventListeners.
+        *
+        * @param {string} name
+        * @memberof CometChat
+        */
     export function removeLoginListener(name: string): void;
     /**
         * Get the current connection status
@@ -672,15 +672,15 @@ export namespace CometChat {
     export function logout(): Promise<Object>;
 
     /**
-     * method to set resource, platform and language variable.
-     *
-     * @static
-     * @param {string} resource
-     * @param {string} platform
-     * @param {string} language
-     * @returns void
-     * @memberof CometChat
-     */
+	 * method to set resource, platform and language variable.
+	 *
+	 * @static
+	 * @param {string} resource
+	 * @param {string} platform
+	 * @param {string} language
+	 * @returns void
+	 * @memberof CometChat
+	 */
     export function setSource(resource: string, platform: string, language: string): void;
 
     /**
@@ -749,8 +749,8 @@ export namespace CometChat {
         setLastActiveAt(lastActiveAt: number): void;
         getLink(): string;
         setLink(link: string): string;
-        getMetadata(): string;
-        setMetadata(metadata: string): void;
+        getMetadata(): Object;
+        setMetadata(metadata: Object): void;
         getRole(): string;
         setRole(role: string): void;
         getStatus(): string;
@@ -760,7 +760,7 @@ export namespace CometChat {
         setBlockedByMe(blockedByMe: boolean): void;
         getBlockedByMe(): boolean;
         setHasBlockedMe(hasBlockedMe: boolean): void;
-        getHasBlockedMeMe(): boolean;
+        getHasBlockedMe(): boolean;
         constructor(userObj: UserObj | any);
     }
     export class Me extends User {
@@ -1523,8 +1523,8 @@ export namespace CometChat {
         setDescription(description: string): void;
         getOwner(): string;
         setOwner(owner: string): void;
-        getMetadata(): string;
-        setMetadata(metadata: string): void;
+        getMetadata(): Object;
+        setMetadata(metadata: Object): void;
         getCreatedAt(): number;
         setCreatedAt(createdAt: number): void;
         getUpdatedAt(): number;
@@ -1653,9 +1653,9 @@ export namespace CometChat {
         setData(data: object): void;
         getSessionId(): string;
         setSessionId(sessionId: string): void;
-        getMetadata(): any;
+        getMetadata(): Object;
         getSender(): User;
-        setMetadata(metadata: any): void;
+        setMetadata(metadata: Object): void;
         getAction(): string;
         setAction(action: string): void;
         getInitiatedAt(): number;
@@ -1819,8 +1819,8 @@ export namespace CometChat {
         getActionOn(): User | Group | BaseMessage;
         setActionFor(actionFor: User | Group | BaseMessage): void;
         getActionFor(): User | Group | BaseMessage | any;
-        getMetadata(): any;
-        setMetadata(metadata: any): void;
+        getMetadata(): Object;
+        setMetadata(metadata: Object): void;
     }
 
     export class GroupsRequest {
@@ -1986,8 +1986,8 @@ export namespace CometChat {
         setReceiverType(receiverType: string): void;
         getReceiverId(): string;
         setReceiverId(receiverId: string): void;
-        getMetadata(): string;
-        setMetadata(meta: string): void;
+        getMetadata(): Object;
+        setMetadata(meta: Object): void;
         getSender(): User;
         setSender(sender: User): void;
     }
@@ -2015,8 +2015,8 @@ export namespace CometChat {
         setLastActiveAt(lastActiveAt: number): void;
         getLink(): string;
         setLink(link: string): void;
-        getMetadata(): string;
-        setMetadata(metadata: string): void;
+        getMetadata(): Object;
+        setMetadata(metadata: Object): void;
         getRole(): string;
         setRole(role: string): void;
         getStatus(): string;
