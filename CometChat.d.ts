@@ -465,11 +465,11 @@ export namespace CometChat {
         * @static
         * @param {string} guid
         * @param {Array<GroupMember>} groupMembers
-        * @param {Array<GroupMember>} [bannedMembersList]
+        * @param {Array<String>} bannedMembersList
         * @returns {Promise<Object>}
         * @memberof CometChat
         */
-    export function addMembersToGroup(guid: string, groupMembers: Array<GroupMember>, bannedMembersList?: Array<string>): Promise<Object>;
+    export function addMembersToGroup(guid: string, groupMembers: Array<GroupMember>, bannedMembersList: Array<string>): Promise<Object>;
 
     /**-------------------------------------------------------------------*
         * Call related functions provided by CometChat class                 *
@@ -670,7 +670,7 @@ export namespace CometChat {
         * @memberof CometChat
         */
     export function logout(): Promise<Object>;
-
+    
     /**
 	 * method to set resource, platform and language variable.
 	 *
@@ -1880,8 +1880,10 @@ export namespace CometChat {
         limit: number;
         searchKeyword: string;
         guid: string;
+        scopes?: Array<String>;
         setLimit(limit: number): this;
         setSearchKeyword(searchKeyword: string): this;
+        setScopes(scopes: Array<String>): this;
         build(): GroupMembersRequest;
     }
 
@@ -1908,12 +1910,14 @@ export namespace CometChat {
         searchKeyword: string;
         shouldHideBlockedUsers: boolean;
         role: string;
+        roles: Array<String>;
         showFriendsOnly: boolean;
         setLimit(limit: number): this;
         setStatus(status: string): this;
         setSearchKeyword(searchKeyword: string): this;
         hideBlockedUsers(hideBlockedUsers: boolean): this;
         setRole(role: string): this;
+        setRoles(roles: Array<String>): this;
         friendsOnly(friendsOnly: boolean): this;
         build(): UsersRequest;
     }
@@ -1955,7 +1959,9 @@ export namespace CometChat {
         updatedAt?: string;
         onlyUpdate?: number;
         category?: string;
+        categories?: Array<String>;
         type?: string;
+        types?: Array<String>;
         hideThreadedMessages?: boolean;
         setLimit(limit: number): this;
         setGUID(guid: string): this;
@@ -1969,7 +1975,9 @@ export namespace CometChat {
         setUpdatedAfter(updatedAt: string): this;
         updatesOnly(onlyUpdate: boolean): this;
         setCategory(category: string): this;
+        setCategories(categories: Array<String>): this;
         setType(type: string): this;
+        setTypes(types: Array<String>): this;
         hideReplies(hideReplies: boolean): this;
         /**
          *Built the DefaultMessagesRequest
