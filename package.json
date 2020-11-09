@@ -1,6 +1,6 @@
 {
   "name": "@cometchat-pro/cordova-ionic-chat",
-  "version": "2.0.14",
+  "version": "2.0.15",
   "description": "A complete chat solution.",
   "main": "CometChat.js",
   "scripts": {
