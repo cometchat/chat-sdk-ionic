@@ -25,6 +25,11 @@ export namespace CometChat {
         MEMBER_INVITED: string;
         MEMBER_SCOPE_CHANGED: string;
     };
+    let CALL_MODE: {
+        DEFAULT: string,
+	SPOTLIGHT: string,
+	SINGLE: string,
+    };
     let CALL_TYPE: {
         AUDIO: string;
         VIDEO: string;
@@ -528,23 +533,13 @@ export namespace CometChat {
     export function getActiveCall(): Call;
 
     /**
-        * function to start the jitsi view in iframe.
+        * function to start a call.
         *
         * @static
-        * @param {string} sessionId
-        * @param {HTMLElement} view
-        * @param {UserCallEventListener} [callEventHandler]
+        * @param {CallSettings} callSettings
         * @memberof CometChat
         */
-    export function startCall(sessionId: string, view: HTMLElement, callEventHandler?: OngoingCallListener, context?: any): void;
-    export function toggleAudio(): void;
-    export function toggleVideo(): void;
-    export function leaveCall(): void;
-    export function createCallView(context: any): {
-        prop1: typeof CometChat.makeCall;
-        onMessage: (event: any) => void;
-    };
-    export function makeCall(context: any, uri: string): void;
+    export function startCall(callSettings: CallSettings): void;
     /**
         * function will inform the server that current outgoing call is timedout for the call with the session id provided as an argument.
         * and will also add the same in localstorage on success.
@@ -766,6 +761,10 @@ export namespace CometChat {
     export class Me extends User {
         constructor(userObj: UserObj | any);
         getWsChannel(): any;
+    }
+
+    export class RTCUser {
+        constructor(uid: string, name: string, avatar: string);
     }
 
     export class Conversation {
@@ -1243,8 +1242,11 @@ export namespace CometChat {
         };
     };
     export const CallConstants: {
-        CALL_TYPE_AUDIO: string;
-        CALL_TYPE_VIDEO: string;
+        CALL_MODE: {
+            DEFAULT: string,
+            SPOTLIGHT: string,
+            SINGLE: string,
+        };
         CALL_TYPE: {
             AUDIO: string;
             VIDEO: string;
@@ -1745,7 +1747,7 @@ export namespace CometChat {
         unAnswerCall(): void;
         onCallStarted(call: Call): Promise<Call>;
         endCallSession(): void;
-        startCall(view: HTMLElement, callEventHandler?: OngoingCallListener, context?: any): void;
+        endSession(): void;
         static toggleAudio(): void;
         static toggleVideo(): void;
         static leave(): void;
@@ -1933,6 +1935,50 @@ export namespace CometChat {
         setLimit(limit: number): this;
         setConversationType(conversationType: string): this;
         build(): ConversationsRequest;
+    }
+
+    export class CallSettings {
+        constructor(builder?: CallSettingsBuilder);
+        getSessionId(): string;
+        isAudioOnlyCall(): boolean;
+        isDefaultLayoutEnabled(): boolean;
+        getUser(): RTCUser;
+        getRegion(): string;
+        getCallEventListener(): OngoingCallListener
+        getMode(): string;
+        isEndCallButtonEnabled(): boolean;
+        isSwitchCameraButtonEnabled(): boolean;
+        isMuteAudioButtonEnabled(): boolean;
+        isPauseVideoButtonEnabled(): boolean;
+        isAudioModeButtonEnabled(): boolean;
+    }
+
+    export class CallSettingsBuilder {
+        sessionID: string;
+        defaultLayout: boolean;
+        isAudioOnly: boolean;
+        region: string;
+        user: RTCUser;
+        listener: OngoingCallListener;
+        mode: string;
+        ShowEndCallButton: boolean;
+        ShowSwitchCameraButton: boolean;
+        ShowMuteAudioButton: boolean;
+        ShowPauseVideoButton: boolean;
+        ShowAudioModeButton: boolean;
+        setSessionID(sessionID: string): this;
+        enableDefaultLayout(defaultLayout: boolean): this;
+        setIsAudioOnlyCall(isAudioOnly: boolean): this;
+        setRegion(region: string): this;
+        setUser(user: RTCUser): this;
+        setCallEventListener(listener: OngoingCallListener): this;
+        setMode(mode: string): this;
+        showEndCallButton(showEndCallButton: boolean): this;
+        showSwitchCameraButton(showSwitchCameraButton: boolean): this;
+        showMuteAudioButton(showMuteAudioButton: boolean): this;
+        showPauseVideoButton(showPauseVideoButton: boolean): this;
+        showAudioModeButton(showAudioModeButton: boolean): this;
+        build(): CallSettings;
     }
 
     export class CometChatHelper {
