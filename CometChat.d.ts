@@ -16,7 +16,9 @@ export namespace CometChat {
     let CATEGORY_MESSAGE: string;
     let CATEGORY_ACTION: string;
     let CATEGORY_CALL: string;
+    let CATEGORY_CUSTOM: string;
     let ACTION_TYPE: {
+        MEMBER_ADDED: string;
         MEMBER_JOINED: string;
         MEMBER_LEFT: string;
         MEMBER_KICKED: string;
@@ -24,6 +26,11 @@ export namespace CometChat {
         MEMBER_UNBANNED: string;
         MEMBER_INVITED: string;
         MEMBER_SCOPE_CHANGED: string;
+        MESSAGE_EDITED: string;
+        MESSSAGE_DELETED: string;
+        TYPE_USER: string;
+        TYPE_GROUP: string;
+        TYPE_GROUP_MEMBER: string;
     };
     let CALL_MODE: {
         DEFAULT: string,
@@ -1236,6 +1243,7 @@ export namespace CometChat {
             TYPE_MEMBER_ADDED: string;
         };
         ACTIONS: {
+            MEMBER_ADDED: string;
             MEMBER_JOINED: string;
             MEMBER_LEFT: string;
             MEMBER_KICKED: string;
@@ -1243,6 +1251,11 @@ export namespace CometChat {
             MEMBER_UNBANNED: string;
             MEMBER_INVITED: string;
             MEMBER_SCOPE_CHANGED: string;
+            MESSAGE_EDITED: string;
+            MESSSAGE_DELETED: string;
+            TYPE_USER: string;
+            TYPE_GROUP: string;
+            TYPE_GROUP_MEMBER: string;
         };
     };
     export const BlockedUsersConstants: {
