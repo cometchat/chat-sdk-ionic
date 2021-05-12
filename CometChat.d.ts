@@ -34,8 +34,14 @@ export namespace CometChat {
     };
     let CALL_MODE: {
         DEFAULT: string,
-	SPOTLIGHT: string,
-	SINGLE: string,
+        SPOTLIGHT: string,
+        SINGLE: string,
+    };
+    let AUDIO_MODE: {
+        SPEAKER: string,
+        EARPIECE: string,
+        BLUETOOTH: string,
+        HEADPHONES: string
     };
     let CALL_TYPE: {
         AUDIO: string;
@@ -318,6 +324,15 @@ export namespace CometChat {
     export function updateUser(user: User | any, apiKey: string): Promise<User>;
     
     /**
+	 *
+	 * function to update the logged-in user and returns the result with updated user
+	 * @param {User} user
+	 * @returns Promise<User>
+	 * @memberof CometChat
+	 */
+    export function updateCurrentUserDetails(user: User | any): Promise<User>
+
+    /**
         * function to get the information for the uid provided as an argument
         * @static
         * @param {string} uid
@@ -352,6 +367,18 @@ export namespace CometChat {
 	 */
 
     export function getConversation(conversationWith: string, conversationType: string): Promise<Conversation>;
+
+    /**
+	 * function to delete conversation of a specific user/group.
+	 *
+	 * @static
+	 * @param {string} conversationWith
+	 * @param {string} conversationType
+	 * @returns Promise<string>
+	 * @memberof CometChat
+	 */
+
+    export function deleteConversation(conversationWith: string, conversationType: string): Promise<string>;
 
     /**-------------------------------------------------------------------*
         * Group related functions provided by CometChat class                *
@@ -489,10 +516,10 @@ export namespace CometChat {
         * @static
         * @param {string} guid
         * @param {string} uid
-        * @returns
+        * @returns {Promise<string>}
         * @memberof CometChat
         */
-    export function transferGroupOwnership(guid: string, uid: string): Promise<boolean>;
+    export function transferGroupOwnership(guid: string, uid: string): Promise<string>;
 
     /**-------------------------------------------------------------------*
         * Call related functions provided by CometChat class                 *
@@ -1302,6 +1329,12 @@ export namespace CometChat {
             SPOTLIGHT: string,
             SINGLE: string,
         };
+        AUDIO_MODE: {
+            SPEAKER: string,
+            EARPIECE: string,
+            BLUETOOTH: string,
+            HEADPHONES: string
+        };
         CALL_TYPE: {
             AUDIO: string;
             VIDEO: string;
@@ -1652,6 +1685,7 @@ export namespace CometChat {
         onCallEnded?: Function;
         onError?: Function;
         onUserListUpdated?: Function;
+        onAudioModesUpdated?: Function;
         constructor(...args: any[]);
     }
     export class LoginListener {
@@ -2013,6 +2047,7 @@ export namespace CometChat {
         isAudioModeButtonEnabled(): boolean;
         getStartWithAudioMuted(): boolean;
         getStartWithVideoMuted(): boolean;
+        getDefaultAudioMode(): string;
     }
 
     export class CallSettingsBuilder {
@@ -2028,6 +2063,7 @@ export namespace CometChat {
         ShowAudioModeButton: boolean;
         StartAudioMuted: boolean;
         StartVideoMuted: boolean;
+        defaultAudioMode: string;
 
         setSessionID(sessionID: string): this;
         enableDefaultLayout(defaultLayout: boolean): this;
@@ -2041,7 +2077,14 @@ export namespace CometChat {
         showAudioModeButton(showAudioModeButton: boolean): this;
         startWithAudioMuted(audioMuted: boolean): this;
         startWithVideoMuted(videoMuted: boolean): this;
+        setDefaultAudioMode(audioMode: string): this;
         build(): CallSettings;
+    }
+
+    export class AudioMode {
+        constructor(mode, isSelected);
+        getMode(): string;
+        getIsSelected(): boolean;
     }
 
     export class CometChatHelper {
