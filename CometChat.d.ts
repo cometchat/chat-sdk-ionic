@@ -3628,6 +3628,10 @@ export class AppSettings {
         autoJoinGroup: boolean;
         /** @private */
         establishSocketConnection: boolean;
+        /** @private */
+        adminHost: string;
+        /** @private */
+        clientHost: string;
         /**
             * @private
             * @param {AppSettingsBuilder}
@@ -3658,6 +3662,17 @@ export class AppSettings {
             * @returns {boolean}
          */
         shouldAutoEstablishSocketConnection(): boolean;
+        /**
+         * This method returns the admin host to which the SDK should connect.
+         * @returns {boolean}
+        */
+        getAdminHost(): string;
+
+        /**
+         * This method returns the client host to which the SDK should connect.
+         * @returns {boolean}
+        */
+        getClientHost(): string;
 }
 export class AppSettingsBuilder {
         /** @private */
@@ -3670,6 +3685,10 @@ export class AppSettingsBuilder {
         autoJoinGroup: boolean;
         /** @private */
         establishSocketConnection: boolean;
+        /** @private */
+        adminHost: string;
+        /** @private */
+        clientHost: string;
         /**
             * A method to subscribe presence for all users.
             * @returns
@@ -3704,6 +3723,18 @@ export class AppSettingsBuilder {
             * @returns
          */
         autoEstablishSocketConnection(establishSocketConnection?: boolean): this;
+        /**
+         * @param {string} adminHost
+         * This method is used to override the admin host which the SDK uses to make an API call.
+         * @returns 
+        */
+        overrideAdminHost(adminHost: string): this;
+        /**
+         * @param {string} clientHost
+         * This method is used to override the client host which the SDK uses to make an API call.
+         * @returns 
+        */
+        overrideClientHost(clientHost: string): this;
         /**
             * This method will return an object of the AppSettings class.
             * @returns {AppSettings}
@@ -3873,6 +3904,13 @@ export class Attachment {
 }
 
 export class CallSettings {
+        static POSITION_TOP_LEFT: string;
+        static POSITION_TOP_RIGHT: string;
+        static POSITION_BOTTOM_LEFT: string;
+        static POSITION_BOTTOM_RIGHT: string;
+        static ASPECT_RATIO_DEFAULT: string;
+        static ASPECT_RATIO_CONTAIN: string;
+        static ASPECT_RATIO_COVER: string;
         constructor(builder?: CallSettingsBuilder);
         getSessionId(): string;
         isAudioOnlyCall(): boolean;
@@ -3896,6 +3934,9 @@ export class CallSettings {
         getAvatarMode(): string;
         isRecordingButtonEnabled(): boolean;
         shouldStartRecordingOnCallStart(): boolean;
+        getMainVideoContainerSetting(): MainVideoContainerSetting;
+        isVideoTileClickEnabled(): boolean;
+        isVideoTileDragEnabled(): boolean;
 }
 export class CallSettingsBuilder {
         /** @private */ sessionID: string;
@@ -3920,6 +3961,9 @@ export class CallSettingsBuilder {
         /** @private */ AvatarMode: string;
         /** @private */ ShowRecordingButton: boolean;
         /** @private */ StartRecordingOnCallStart: boolean;
+        /** @private */ MainVideoContainerSetting: MainVideoContainerSetting;
+        /** @private */ EnableVideoTileClick: boolean;
+        /** @private */ EnableDraggableVideoTile: boolean;
         /**
             *
             * @param {string} sessionID
@@ -4110,10 +4154,90 @@ export class CallSettingsBuilder {
          */
         startRecordingOnCallStart(startRecordingOnCallStart: boolean): this;
         /**
+         * 
+         * @param {MainVideoContainerSetting} mainVideoContainerSetting 
+         * This method can be used to customize the main video container.
+         * @returns 
+        */
+        setMainVideoContainerSetting(mainVideoContainerSetting: MainVideoContainerSetting): this;
+        /**
+         * 
+         * @param {boolean} enableVideoTileClick 
+         * This method can be used to enable/disable video tile click functionality in Spotlight mode.
+         * By default the video tile is clickable.
+         * @returns 
+        */
+        enableVideoTileClick(enableVideoTileClick: boolean): this;
+        /**
+         * 
+         * @param {boolean} enableVideoTileDrag 
+         * This method can be used to enable/disable video tile drag functionality in Spotlight mode.
+         * By default the video tile is draggable.
+         * @returns 
+        */
+        enableVideoTileDrag(enableVideoTileDrag: boolean): this;
+        /**
             * This method will return an object of the CallSettings class.
             * @returns {CallSettings}
          */
         build(): CallSettings;
+}
+export class MainVideoContainerSetting{
+    /** @private */  videoFit: string;
+    /** @private */  zoomButton: Object;
+    /** @private */  fullScreenButton: Object;
+    /** @private */  userListButton: Object;
+    /** @private */  nameLabel: Object;
+
+    /**
+     * 
+     * @param {string} mainVideoAspectRatio 
+     * This method is used to set the aspect ratio of main video.
+     * The default value is `contain`.
+     * @returns 
+    */
+    setMainVideoAspectRatio(mainVideoAspectRatio: string);
+    
+    /**
+     * 
+     * @param {string} position 
+     * @param {boolean} visibility 
+     * This method is used to set the position & visibility parameter of the full screen button.
+     * By default the full screen button is visible in the `bottom-right` position.
+     * @returns 
+    */
+    setFullScreenButtonParams(position: string, visibility: boolean);
+
+    /**
+     * 
+     * @param {string} position 
+     * @param {boolean} visibility 
+     * @param {string} backgroundColor 
+     * This method is used to set the position, visibility & background color of the name label.
+     * By default the name label is visible in the `bottom-right` position with a background-color `#333333`.
+     * @returns 
+    */
+    setNameLabelParams(position: string, visibility: boolean, backgroundColor: string);
+
+    /**
+     * 
+     * @param {string} position 
+     * @param {boolean} visibility 
+     * This method is used to set the position & visibility parameter of the zoom button.
+     * By default the zoom button is visible in the `bottom-right` position.
+     * @returns 
+    */
+    setZoomButtonParams(position: string, visibility: boolean);
+
+    /**
+     * 
+     * @param {string} position 
+     * @param {boolean} visibility 
+     * This method is used to set the position & visibility parameter of the user list button.
+     * By default the user list button is visible in the `bottom-right` position.
+     * @returns 
+    */
+    setUserListButtonParams(position: string, visibility: boolean);
 }
 
 export class AudioMode {
