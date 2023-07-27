@@ -12,8 +12,8 @@
 
 # CometChat Cordova Ionic SDK
 
-CometChat Pro enables you to add voice, video & text chat for your website & app.
-This guide demonstrates how to add chat to an Ionic App using CometChat Pro.
+CometChat enables you to add voice, video & text chat for your website & app.
+This guide demonstrates how to add chat to an Ionic App using CometChat.
 
 ## Features
 
@@ -76,10 +76,10 @@ To setup Cordova Ionic SDK, you  need to first register on CometChat Dashboard. 
 <ul>
 <li>
 <b>Install via NPM</b><br/>
-1. Run the following command to install the CometChat Pro Cordova Ionic SDK<br/>
+1. Run the following command to install the CometChat Cordova Ionic SDK<br/>
 
 ```javascript
-	npm install @cometchat-pro/cordova-ionic-chat@3.0.11 --save
+	npm install @cometchat/chat-sdk-ionic@4.0.0 --save
 ```
 
  You can refer to the below link for instructions on how to do so:<br/>
@@ -163,7 +163,7 @@ CometChat.getLoggedinUser().then(
 
 <hr/>
 
-📝 Please refer to our [Developer Documentation](https://prodocs.cometchat.com/docs/cordova-ionic-quick-start) for more information on how to configure the CometChat Pro SDK and implement various features using the same.
+📝 Please refer to our [Developer Documentation](https://prodocs.cometchat.com/docs/cordova-ionic-quick-start) for more information on how to configure the CometChat SDK and implement various features using the same.
 
 <hr/>
 
