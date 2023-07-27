@@ -2458,6 +2458,10 @@ export class CallListener {
             * This event is triggered when an incoming call is cancelled.
          */
         onIncomingCallCancelled?: Function;
+        /**
+            * This event is triggered when call is ended.
+         */
+        onCallEndedMessageReceived?: Function;
         constructor(...args: any[]);
 }
 export class UserListener {
