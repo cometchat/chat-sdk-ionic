@@ -726,7 +726,7 @@ export namespace CometChat {
             * @returns void
             * @memberof CometChat
          */
-        export function connect(): void;
+        export function connect(props?: {onSuccess?: Function, onError?: Function}): void;
         /**
             *
             * Method to disconnect from WebSocket server.
@@ -735,7 +735,7 @@ export namespace CometChat {
             * @returns void
             * @memberof CometChat
          */
-        export function disconnect(): void;
+        export function disconnect(props?: {onSuccess?: Function, onError?: Function}): void;
 
 
 /**
@@ -2621,6 +2621,10 @@ export class ConnectionListener {
             * This event is triggered when the WebSocket connection is in disconnected state.
          */
         onDisconnected?: Function;
+        /**
+         * This event is triggered when the WebSocket connection gets interrupted.
+        */
+         onConnectionError?: Function;
         /**
             * This event is triggered when the WebSocket connection is in feature throttled state.
          */
