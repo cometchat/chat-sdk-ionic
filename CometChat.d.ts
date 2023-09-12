@@ -530,6 +530,13 @@ export namespace CometChat {
             * @memberof CometChat
          */
         export function rejectCall(sessionId: string, status: any): Promise<Call>;
+         /**
+            * Function to clear call status.
+            * @param {string} sessionid
+            * @returns {Promise<Call>}
+            * @memberof CometChat
+         */
+         export function clearActiveCall(): void;
         /**
             * Function to end an ongoing call.
             * @param {string} sessionid
@@ -736,7 +743,15 @@ export namespace CometChat {
             * @memberof CometChat
          */
         export function disconnect(props?: {onSuccess?: Function, onError?: Function}): void;
-
+         /**
+            *
+            * Method to ping to WebSocket server.
+            *
+            * @static
+            * @returns void
+            * @memberof CometChat
+         */
+        export function ping(props: {onError?: Function, onSuccess?: Function}): void;
 
 /**
   *
