@@ -298,6 +298,24 @@ export namespace CometChat {
         export function getUnreadMessageCountForGroup(GUID: string, doHideMessages?: boolean): Promise<Object>;
         
         /**
+            * Function to add reaction for the provided messageID.
+            * @param {string | any} messageId
+            * @param {string} reaction
+            * @returns {Promise<Object>}
+            * @memberof CometChat
+         */
+        export function addReaction(messageId: string | any, reaction: string): Promise<BaseMessage>;
+        
+        /**
+            * Function to remove reaction for the provided messageID.
+            * @param {string | any} messageId
+            * @param {string} reaction
+            * @returns {Promise<Object>}
+            * @memberof CometChat
+         */
+        export function removeReaction(messageId: string | any, reaction: string): Promise<BaseMessage>;
+        
+        /**
             * Funtion to edit a message.
             * @param {BaseMessage} message
             * @returns {Promise<BaseMessage>}
@@ -558,10 +576,11 @@ export namespace CometChat {
         /**
             * Function to end an ongoing call.
             * @param {string} sessionid
+            * @param {boolean} isInternal - Optional
             * @returns {Promise<Call>}
             * @memberof CometChat
          */
-        export function endCall(sessionid: string): Promise<Call>;
+        export function endCall(sessionid: string, isInternal?: boolean): Promise<Call>;
         /**
             * Function to get the active call.
             * @returns {Call}
@@ -611,6 +630,7 @@ export namespace CometChat {
             * @memberof CometChat
          */
         export function removeMessageListener(name: string): void;
+        
         /**
             *
             * Function to add a Call Listener.
@@ -1137,6 +1157,8 @@ export class BaseMessage implements Message {
         protected sender?: User;
         protected receiverId?: string;
         protected receiver?: User | Group;
+        protected data?: object;
+        protected reactions?: ReactionCount[];
         protected type?: string;
         protected category?: MessageCategory;
         protected receiverType?: string;
@@ -1156,9 +1178,20 @@ export class BaseMessage implements Message {
         protected deletedBy: string;
         protected replyCount: number;
         protected rawMessage: Object;
+        protected unreadRepliesCount: number;
         protected mentionedUsers?: User[];
         protected mentionedMe?: boolean;
         constructor(receiverId: string, messageType: string, receiverType: string, category: MessageCategory);
+        /**
+            * Get unread replies count of the message
+            * @returns {number}
+            */
+        getUnreadRepliesCount(): number;
+        /**
+            * @param {number}
+            * Set unread replies count of the message
+            */
+        setUnreadRepliesCount(value: number): void;
         /**
             * Get ID of the message
             * @returns {number}
@@ -1393,6 +1426,26 @@ export class BaseMessage implements Message {
             * @returns
             */
         hasMentionedMe(): boolean;
+        /**
+            * Method to get data of the message.
+            * @returns {Object}
+            */
+        getData(): any;
+        /**
+            * Method to set data of the message.
+            * @param {Object} value
+            */
+        setData(value: object): void;
+        /**
+            * set the array of reactions in message
+            * @returns {ReactionCount[]}
+        */
+        setReactions(reactions: any): ReactionCount[];
+        /**
+            * Get the array of reactions in message
+            * @returns {ReactionCount[]}
+            */
+        getReactions(): ReactionCount[];
 }
 
 /**
@@ -1407,7 +1460,7 @@ export class TextMessage extends BaseMessage implements Message {
         };
         /** @private */ static readonly CATEGORY: string;
         private text?;
-        private data?;
+        protected data?;
         private processedText?;
         private tags?;
         /**
@@ -1448,7 +1501,7 @@ export class TextMessage extends BaseMessage implements Message {
             * Method to set data of the message.
             * @param {Object} value
          */
-        setData(value: string): void;
+        setData(value: any): void;
         /**
             * Method to get text of the message.
             * @returns {string}
@@ -1564,6 +1617,8 @@ export const ResponseConstants: {
         KEY_DATA: string;
         KEY_META: string;
         KEY_CURSOR: string;
+        KEY_NEXT: string;
+        KEY_PREVIOUS: string;
         KEY_ACTION: string;
         KEY_MESSAGE: string;
         KEY_ERROR: string;
@@ -1575,6 +1630,7 @@ export const ResponseConstants: {
         KEY_IDENTITY: string;
         KEY_SERVICE: string;
         KEY_ENTITIES: string;
+        KEY_REACTIONS: string;
         KEY_ENTITITY: string;
         KEY_ENTITYTYPE: string;
         KEY_ATTACHMENTS: string;
@@ -2255,6 +2311,10 @@ export const AIErrors: {
         details: string;
     };
 };
+export enum REACTION_ACTION {
+    REACTION_ADDED = "message_reaction_added",
+    REACTION_REMOVED = "message_reaction_removed"
+}
 export const ExtensionErrors: {
     INVALID_EXTENSION: {
         code: string;
@@ -2650,8 +2710,17 @@ export class MessageListener {
             * This event is triggered when a interaction goal is completd .
             */
         onInteractionGoalCompleted?: Function;
+        /**
+                 * This event is triggered when a reaction is added.
+         */
+        onMessageReactionAdded?: Function; /**
+        /**
+                 * This event is triggered when a reaction is removed.
+         */
+        onMessageReactionRemoved?: Function;
         constructor(...args: any[]);
 }
+
 export class CallListener {
         /**
             * This event is triggered when an incoming call is received.
@@ -3067,6 +3136,7 @@ export class Action extends BaseMessage implements Message {
                 TYPE_MESSAGE_DELETED: string;
                 TYPE_MEMBER_ADDED: string;
         };
+        protected data?: any;
         protected actionBy: User | Group | BaseMessage;
         protected actionFor: User | Group | BaseMessage;
         protected actionOn: User | Group | BaseMessage;
@@ -3767,7 +3837,7 @@ export class TypingIndicator {
 export class CustomMessage extends BaseMessage implements Message {
         private customData;
         private subType;    
-        private data?;
+        protected data?;
         private tags?;
         constructor(...args: any[]);
         /**
@@ -4076,6 +4146,7 @@ export class CometChatHelper {
             * @memberof CometChat
          */
         static getConversationFromMessage(message: TextMessage | MediaMessage | CustomMessage | InteractiveMessage | any): Promise<Conversation>;
+        static updateMessageWithReactionInfo(baseMessage: BaseMessage, messageReaction: MessageReaction, action: REACTION_ACTION): Promise<BaseMessage | null>;
 }
 
 /**
@@ -4088,13 +4159,35 @@ export class Conversation {
         protected lastMessage: TextMessage | MediaMessage | CustomMessage | InteractiveMessage | any;
         protected conversationWith: User | Group;
         protected unreadMessageCount: number;
+        protected unreadMentionsCount: number;
+        protected lastReadMessageId: string;
         protected tags: Array<String>;
-        constructor(conversationId: string, conversationType: string, lastMessage: TextMessage | MediaMessage | CustomMessage | InteractiveMessage |any, conversationWith: User | Group, unreadMessageCount: number, tags: Array<String>);
+        constructor(conversationId: string, conversationType: string, lastMessage: TextMessage | MediaMessage | CustomMessage | any, conversationWith: User | Group, unreadMessageCount: number, tags: Array<String>, unreadMentionsCount: number | any, lastReadMessageId: string | any);
         /**
             * Method to set conversation ID of the conversation.
             * @param {string} conversationId
          */
         setConversationId(conversationId: string): void;
+        /**
+        * Method to get unreadMentionsCount of the conversation.
+        * @returns {number}
+        */
+        getUnreadMentionsCount(): number;
+        /**
+         * Method to set unreadMentionsCount of the conversation.
+         * @param {number}
+         */
+        setUnreadMentionsCount(count: number): void;
+        /**
+         * Method to get lastReadMessageId of the conversation.
+         * @returns {string}
+         */
+        getLastReadMessageId(): string;
+        /**
+         * Method to set lastReadMessageId of the conversation.
+         * @param {string}
+         */
+        setLastReadMessageId(id: string): void;
         /**
             * Method to set conversation type of the conversation.
             * @param {string} conversationId
@@ -4579,6 +4672,7 @@ export class AudioMode {
 }
 
 export class TransientMessage {
+        protected data: any;
         constructor(receiverId: string, receiverType: string, data: any);
         /**
             * Method to get receiverID of the transient message.
@@ -4742,6 +4836,54 @@ export class MessageReceipt {
         setReceiptType(receiptType?: string): void;
 }
 
+export class ReactionCount {
+    reaction: string;
+    count: number;
+    reactedByMe?: boolean;
+    /**
+        * Method to get reacted reaction.
+        * @returns {string}
+        */
+    getReaction(): string;
+    /**
+        * Method to set reacted reaction.
+        */
+    setReaction(reaction: string): void;
+    /**
+        * Method to get no of users reacted with a reaction.
+        * @returns {number}
+        */
+    getCount(): number;
+    /**
+        * Method to set no of users reacted with a reaction.
+        */
+    setCount(count: number): void;
+    /**
+        * Method to get if loggedIn user reacted with the a reaction.
+        * @returns {boolean}
+        */
+    getReactedByMe(): boolean;
+    /**
+        * Method to set if loggedIn user reacted with the a reaction.
+        */
+    setReactedByMe(reactedByMe: boolean): void;
+}
+export class MessageReaction {
+    constructor(object: any);
+    getReactionId(): string;
+    setReactionId(id: string): void;
+    getMessageId(): number | string;
+    setMessageId(messageId: number | string): void;
+    getReaction(): string;
+    setReaction(reaction: string): void;
+    getUid(): string;
+    setUid(uid: string): void;
+    getReactedAt(): number;
+    setReactedAt(reactedAt: number): void;
+    getReactedBy(): User;
+    setReactedBy(reactedBy: User): void;
+}
+
 export class RTCUser {
     constructor(uid: string);
     setUID(uid: string): void;
@@ -4783,7 +4925,7 @@ export class InteractiveMessage extends BaseMessage implements Message {
     };
     private interactiveData;
     private interactionGoal;
-    private data?;
+    protected data?;
     private interactions?;
     private tags?;
     private allowSenderInteraction?;
@@ -4975,5 +5117,45 @@ export class InteractionReceipt {
     setInteractions(interactions: Array<Interaction>): void;
 }
 
+export class ReactionRequest {
+    constructor(builder?: ReactionRequestBuilder);
+    /**
+        * Get list of next reactions list based on the parameters specified in ReactionRequestBuilder class. The Developer need to call this method repeatedly using the same object of ReactionRequest class to get paginated list of reactions.
+        * @returns {Promise<MessageReaction[] | []>}
+        */
+    fetchNext(): Promise<MessageReaction[] | []>;
+    /**
+        * Get list of previous reactions list based on the parameters specified in ReactionRequestBuilder class. The Developer need to call this method repeatedly using the same object of ReactionRequest class to get paginated list of reactions.
+        * @returns {Promise<MessageReaction[] | []>}
+        */
+    fetchPrevious(): Promise<MessageReaction[] | []>;
+}
+export class ReactionRequestBuilder {
+    /** @private */ limit?: number;
+    /** @private */ msgId: number;
+    /** @private */ reaction?: string;
+    /**
+        * A method to set limit for the number of entries returned in a single iteration. A maximum of 100 entries can fetched in a single iteration.
+        * @param {number} limit
+        * @returns
+        */
+    setLimit(limit: number): this;
+    /**
+        * A method to set message ID for which reactions needed to fetch.
+        * @param {number} id
+        * @returns
+        */
+    setMessageId(id?: number): this;
+    /**
+        * A method to fetch list of MessageReaction for a specific reaction.
+        * @returns
+        */
+    setReaction(reaction: string): this;
+    /**
+        * This method will return an object of the ReactionRequest class.
+        * @returns {ReactionRequest}
+        */
+    build(): ReactionRequest;
+}
 
 }
