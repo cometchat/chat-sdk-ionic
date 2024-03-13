@@ -1438,7 +1438,7 @@ export class BaseMessage implements Message {
         setData(value: object): void;
         /**
             * set the array of reactions in message
-            * @returns {ReactionCount[]}
+            *  @param {ReactionCount[]} reactions
         */
         setReactions(reactions: any): ReactionCount[];
         /**
@@ -1460,7 +1460,7 @@ export class TextMessage extends BaseMessage implements Message {
         };
         /** @private */ static readonly CATEGORY: string;
         private text?;
-        protected data?;
+        protected data?: any;
         private processedText?;
         private tags?;
         /**
@@ -1550,6 +1550,7 @@ export const DEFAULT_VALUES: {
     REGION_DEFAULT_US: string;
     REGION_DEFAULT_IN: string;
     REGION_DEFAULT_PRIVATE: string;
+    REACTIONS_MAX_LIMIT: number;
 };
 export enum GroupType {
     Public = "public",
@@ -1770,7 +1771,6 @@ export const MessageConstatnts: {
             TYPES: string;
             HIDE_REPLIES: string;
             HIDE_DELETED_MESSAGES: string;
-            MY_MENTIONS_ONLY: string;
             MENTIONS_WITH_TAG_INFO: string;
             MENTIONS_WITH_BLOCKED_INFO: string;
             ONLY_INTERACTION_GOAL_COMPLETED: string;
@@ -3610,7 +3610,6 @@ export class MessagesRequestBuilder {
         /** @private */ tags?: Array<String>;
         /** @private */ WithTags?: boolean;
         /** @private */ interactionGoalCompletedOnly?: boolean;
-        /** @private */ ListMentionedMessages?: boolean;
         /** @private */ mentionsWithUserTags?: boolean;
         /** @private */ mentionsWithBlockedRelation?: boolean;        
         /**
@@ -3727,12 +3726,6 @@ export class MessagesRequestBuilder {
          * @returns 
         */
         withTags(withTags: boolean): this;
-                /**
-            * A method to get the list of message with mentions
-            * @param {boolean} listMentionedMessages
-            * @returns
-         */
-        myMentionsOnly(listMentionedMessages?: boolean): this;
         /**
             * A method to include the user tags  when getting the list of message with mentions
             * @param {boolean} mentionsWithUserTags
@@ -3750,30 +3743,6 @@ export class MessagesRequestBuilder {
             * @param {boolean} interactionGoalCompletedOnly
             * @returns
          */
-        setInteractionGoalCompletedOnly(interactionGoalCompletedOnly?: boolean): this;
-                /**
-            * A method to get the list of message with mentions
-            * @param {boolean} listMentionedMessages
-            * @returns
-         */
-        myMentionsOnly(listMentionedMessages?: boolean): this;
-        /**
-            * A method to include the user tags  when getting the list of message with mentions
-            * @param {boolean} mentionsWithUserTags
-            * @returns
-            */
-        mentionsWithTagInfo(mentionsWithUserTags?: boolean): this;
-        /**
-            * A method to include the blocked relation when getting the list of message with mentions
-            * @param {boolean} mentionsWithBlockedRelation
-            * @returns
-            */
-        mentionsWithBlockedInfo(mentionsWithBlockedRelation?: boolean): this;
-        /**
-            * A method to get only interacted messages.
-            * @param {boolean} interactionGoalCompletedOnly
-            * @returns
-            */
         setInteractionGoalCompletedOnly(interactionGoalCompletedOnly?: boolean): this;
         /**
             * This method will return an object of the MessagesRequest class.
@@ -3837,7 +3806,7 @@ export class TypingIndicator {
 export class CustomMessage extends BaseMessage implements Message {
         private customData;
         private subType;    
-        protected data?;
+        protected data?: any;
         private tags?;
         constructor(...args: any[]);
         /**
@@ -4146,7 +4115,7 @@ export class CometChatHelper {
             * @memberof CometChat
          */
         static getConversationFromMessage(message: TextMessage | MediaMessage | CustomMessage | InteractiveMessage | any): Promise<Conversation>;
-        static updateMessageWithReactionInfo(baseMessage: BaseMessage, messageReaction: MessageReaction, action: REACTION_ACTION): Promise<BaseMessage | null>;
+        static updateMessageWithReactionInfo(baseMessage: BaseMessage, messageReaction: Reaction, action: REACTION_ACTION): BaseMessage | CometChatException;
 }
 
 /**
@@ -4837,9 +4806,7 @@ export class MessageReceipt {
 }
 
 export class ReactionCount {
-    reaction: string;
-    count: number;
-    reactedByMe?: boolean;
+    constructor(reaction: string, count: number, reactedByMe: boolean);
     /**
         * Method to get reacted reaction.
         * @returns {string}
@@ -4868,12 +4835,27 @@ export class ReactionCount {
         */
     setReactedByMe(reactedByMe: boolean): void;
 }
-export class MessageReaction {
-    constructor(object: any);
+
+export class ReactionEvent {
+    constructor(reaction: Reaction, receiverId: string, receiverType: string, conversationId: string, parentMessageId?: string);
+    getReaction(): Reaction;
+    setReaction(reaction: Reaction): void;
+    getReceiverId(): string;
+    setReceiverId(receiverId: string): void;
+    getReceiverType(): string;
+    setReceiverType(receiverType: string): void;
+    getConversationId(): string;
+    setConversationId(conversationId: string): void;
+    getParentMessageId(): string;
+    setParentMessageId(parentMessageId: string): void;
+}
+
+export class Reaction {
+    constructor(reactionId: string, messageId: string, reaction: string, uid: string, reactedAt: number, reactedBy: User);
     getReactionId(): string;
     setReactionId(id: string): void;
-    getMessageId(): number | string;
-    setMessageId(messageId: number | string): void;
+    getMessageId(): string;
+    setMessageId(messageId: string): void;
     getReaction(): string;
     setReaction(reaction: string): void;
     getUid(): string;
@@ -4925,7 +4907,7 @@ export class InteractiveMessage extends BaseMessage implements Message {
     };
     private interactiveData;
     private interactionGoal;
-    protected data?;
+    protected data?: any;
     private interactions?;
     private tags?;
     private allowSenderInteraction?;
@@ -5117,25 +5099,25 @@ export class InteractionReceipt {
     setInteractions(interactions: Array<Interaction>): void;
 }
 
-export class ReactionRequest {
-    constructor(builder?: ReactionRequestBuilder);
+export class ReactionsRequest {
+    constructor(builder?: ReactionsRequestBuilder);
     /**
-        * Get list of next reactions list based on the parameters specified in ReactionRequestBuilder class. The Developer need to call this method repeatedly using the same object of ReactionRequest class to get paginated list of reactions.
-        * @returns {Promise<MessageReaction[] | []>}
+        * Get list of next reactions list based on the parameters specified in ReactionsRequestBuilder class. The Developer need to call this method repeatedly using the same object of ReactionsRequest class to get paginated list of reactions.
+        * @returns {Promise<Reaction[] | []>}
         */
-    fetchNext(): Promise<MessageReaction[] | []>;
+    fetchNext(): Promise<Reaction[] | []>;
     /**
-        * Get list of previous reactions list based on the parameters specified in ReactionRequestBuilder class. The Developer need to call this method repeatedly using the same object of ReactionRequest class to get paginated list of reactions.
-        * @returns {Promise<MessageReaction[] | []>}
+        * Get list of previous reactions list based on the parameters specified in ReactionsRequestBuilder class. The Developer need to call this method repeatedly using the same object of ReactionsRequest class to get paginated list of reactions.
+        * @returns {Promise<Reaction[] | []>}
         */
-    fetchPrevious(): Promise<MessageReaction[] | []>;
+    fetchPrevious(): Promise<Reaction[] | []>;
 }
-export class ReactionRequestBuilder {
+export class ReactionsRequestBuilder {
     /** @private */ limit?: number;
     /** @private */ msgId: number;
     /** @private */ reaction?: string;
     /**
-        * A method to set limit for the number of entries returned in a single iteration. A maximum of 100 entries can fetched in a single iteration.
+        * A method to set limit for the number of entries returned in a single iteration. A maximum of 20 entries can fetched in a single iteration.
         * @param {number} limit
         * @returns
         */
@@ -5147,15 +5129,15 @@ export class ReactionRequestBuilder {
         */
     setMessageId(id?: number): this;
     /**
-        * A method to fetch list of MessageReaction for a specific reaction.
+        * A method to fetch list of Reaction for a specific reaction.
         * @returns
         */
     setReaction(reaction: string): this;
     /**
-        * This method will return an object of the ReactionRequest class.
-        * @returns {ReactionRequest}
+        * This method will return an object of the ReactionsRequest class.
+        * @returns {ReactionsRequest}
         */
-    build(): ReactionRequest;
+    build(): ReactionsRequest;
 }
 
 }
