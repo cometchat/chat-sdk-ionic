@@ -1309,6 +1309,13 @@ export namespace CometChat {
         */
         export function markAsInteracted(messageId: string | any, elementId: string): Promise<string>;
 
+        /**
+        * Retrieves the ConversationUpdateSettings.
+        *
+        * @return A ConversationUpdateSettings object that holds the settings for updating the conversation.
+        */
+        export function getConversationUpdateSettings(): Promise<ConversationUpdateSettings>;
+
 
         /**
          *
@@ -2862,6 +2869,11 @@ export const APP_SETTINGS: {
         SETTINGS_HASH: string;
         SETTINGS_HASH_RECEIVED_AT: string;
         APP_VERSION: string;
+        PARAMETERS: string;
+        CORE_CONVERSATIONS_UPDATE_ON_CALL_ACTIVITIES: string;
+        CORE_CONVERSATIONS_UPDATE_ON_GROUP_ACTIONS: string;
+        CORE_CONVERSATIONS_UPDATE_ON_CUSTOM_MESSAGES: string;
+        CORE_CONVERSATIONS_UPDATE_ON_REPLIES: string;
     };
 };
 export const COMMON_UTILITY_CONSTANTS: {
@@ -3411,8 +3423,8 @@ export class Call extends BaseMessage implements Message {
         protected initiatedAt: number;
         protected joinedAt: number;
         protected data: any;
-        protected callInitiator: object;
-        protected callReceiver: object;
+        protected callInitiator: User ;
+        protected callReceiver: User | Group ;
         /**
             * @memberof {@link CometChat | CometChat }
             * @param receiverId
@@ -5647,6 +5659,15 @@ export class ReactionsRequestBuilder {
         * @returns {ReactionsRequest}
         */
     build(): ReactionsRequest;
+}
+
+export class ConversationUpdateSettings {
+    constructor();
+    shouldUpdateOnCallActivities(): boolean;
+    shouldUpdateOnGroupActions(): boolean;
+    shouldUpdateOnCustomMessages(): boolean;
+    shouldUpdateOnMessageReplies(): boolean;
+    static fromJSON(jsonData: Object): ConversationUpdateSettings;
 }
 
 }
