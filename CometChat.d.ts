@@ -3,21 +3,49 @@ export namespace CometChatNotifications{
         * Function to get preferences set for the logged-in user.
         * @returns {Promise<PushPreferences>}
         * @memberof CometChatNotifications
-    */
+        * @deprecated
+        *
+        * This method is deprecated as of version 4.0.8 due to newer method 'fetchPreferences'. It will be removed in subsequent versions.
+     */
     export function fetchPushPreferences(): Promise<PushPreferences>;
+    /**
+        * Function to get preferences set for the logged-in user.
+        * @returns {Promise<NotificationPreferences>}
+        * @memberof CometChatNotifications
+     */
+    export function fetchPreferences(): Promise<NotificationPreferences>;
     /**
         * Function to update preferences for the logged-in user.
         * @param {PushPreferences} pushPreferences
         * @returns {Promise<PushPreferences>}
         * @memberof CometChatNotifications
-    */
+        * @deprecated
+        *
+        * This method is deprecated as of version 4.0.8 due to newer method 'updatePreferences'. It will be removed in subsequent versions.
+     */
     export function updatePushPreferences(pushPreferences: PushPreferences): Promise<PushPreferences>;
+    /**
+        * Function to update preferences for the logged-in user.
+        * @param {NotificationPreferences} notificationPreferences
+        * @returns {Promise<NotificationPreferences>}
+        * @memberof CometChatNotifications
+     */
+    export function updatePreferences(notificationPreferences: NotificationPreferences): Promise<NotificationPreferences>;
     /**
         * Function to reset preferences for the logged-in user.
         * @returns {Promise<PushPreferences>}
         * @memberof CometChatNotifications
-    */
+        * @deprecated
+        *
+        * This method is deprecated as of version 4.0.8 due to newer method 'resetPreferences'. It will be removed in subsequent versions.
+     */
     export function resetPushPreferences(): Promise<PushPreferences>;
+    /**
+        * Function to reset preferences for the logged-in user.
+        * @returns {Promise<NotificationPreferences>}
+        * @memberof CometChatNotifications
+     */
+    export function resetPreferences(): Promise<NotificationPreferences>;
     /**
         * Function to register push token for the current authToken of the logged-in user.
         * @returns {Promise<string>}
@@ -53,6 +81,25 @@ export namespace CometChatNotifications{
         * @memberof CometChatNotifications
         */
     export function getMutedConversations(): Promise<MutedConversation[]>;
+
+  /**
+   * Function to update timezone for the logged-in user.
+   * @returns {Promise<string>}
+   * @param {string} timezone
+   * @memberof CometChatNotifications
+   */
+  export function updateTimezone(timezone: String): Promise<string>;
+  /**
+   * Function to get timezone for the logged-in user.
+   * @returns {Promise<{timezone: string} | string>} A promise that resolves to an object containing the timezone or a string in case of an error.
+   * @memberof CometChatNotifications
+   */
+  export function getTimezone(): Promise<
+    | {
+        timezone: string;
+      }
+    | string
+  >;
     export enum MessagesOptions {
         DONT_SUBSCRIBE,
         SUBSCRIBE_TO_ALL,
@@ -90,10 +137,10 @@ export namespace CometChatNotifications{
         GROUP = "group"
     }
     export enum PushPlatforms {
-        FCM_REACT_NATIVE_ANDROID = "fcm_react_native_android",
-        FCM_REACT_NATIVE_IOS = "fcm_react_native_ios",
-        APNS_REACT_NATIVE_DEVICE = "apns_react_native_device",
-        APNS_REACT_NATIVE_VOIP = "apns_react_native_voip"
+        FCM_IONIC_CORDOVA_ANDROID = 'fcm_ionic_cordova_android',
+        FCM_IONIC_CORDOVA_IOS = 'fcm_ionic_cordova_ios',
+        APNS_IONIC_CORDOVA_DEVICE = 'apns_ionic_cordova_device',
+        APNS_IONIC_CORDOVA_VOIP = 'apns_ionic_cordova_voip'
     }
     export const APIConstants: {
         KEY_GROUP_PREFERENCES: string;
@@ -131,6 +178,8 @@ export namespace CometChatNotifications{
         KEY_MUTED_CONVERSATIONS: string;
         KEY_FROM: string;
         KEY_TO: string;
+        KEY_GET_TIMEZONE: string;
+        KEY_UPDATE_TIMEZONE: string;
     };
     export const APIResponseConstants: {
         TOKEN_REGISTER_SUCCESS: string;
@@ -141,6 +190,9 @@ export namespace CometChatNotifications{
         MUTE_CONVERSATION_ERROR: string;
         UNMUTE_CONVERSATION_SUCCESS: string;
         UNMUTE_CONVERSATION_ERROR: string;
+        TIMEZONE_UPDATE_SUCCESS: string;
+        TIMEZONE_UPDATE_ERROR: string;
+        TIMEZONE_FETCH_ERROR: string;
     };
     export const DEFAULT_PROVIDER_ID = "default";
     export class DaySchedule {
@@ -398,7 +450,11 @@ export namespace CometChatNotifications{
             */
             static fromJSON(jsonData: Object): OneOnOnePreferences;
     }
-    
+
+    /**
+     * @deprecated This class is deprecated as of version 4.0.8 due to newer class 'NotificationPreferences'.
+     * It will be removed in subsequent versions.
+    */
     export class PushPreferences {
             /**
                 * Get the OneOnOne preferences.
@@ -435,6 +491,54 @@ export namespace CometChatNotifications{
                 * Convert JSON object to Push preferences.
              */
             fromJSON(json: any): PushPreferences;
+    }
+
+    export class NotificationPreferences {
+        /**
+            * Get the OneOnOne preferences.
+            * @returns {OneOnOnePreferences}
+         */
+        getOneOnOnePreferences(): OneOnOnePreferences;
+        /**
+            * @param {OneOnOnePreferences} oneOnOnePreferences
+            * Set the OneOnOne preferences.
+         */
+        setOneOnOnePreferences(oneOnOnePreferences: OneOnOnePreferences): void;
+        /**
+            * Get the Muted preferences.
+            * @returns {MutePreferences}
+         */
+        getMutePreferences(): MutePreferences;
+        /**
+            * @param {MutePreferences} mutePreferences
+            * Set the Mute preferences.
+         */
+        setMutePreferences(mutePreferences: MutePreferences): void;
+        /**
+            * Get the Group preferences.
+            * @returns {GroupPreferences}
+         */
+        getGroupPreferences(): GroupPreferences;
+        /**
+            * @param {GroupPreferences} groupPreferences
+            * Set the Group preferences.
+         */
+        setGroupPreferences(groupPreferences: GroupPreferences): void;
+        /**
+            * Returns whether to use privacy template or not.
+            * @returns {boolean}
+         */
+        getUsePrivacyTemplate(): boolean;
+        /**
+            * @param {boolean} usePrivacyTemplate
+            * Set whether to use privacy template or not.
+         */
+        setUsePrivacyTemplate(usePrivacyTemplate: boolean): void;
+        /**
+            * @param {Object} jsonData
+            * Convert JSON object to NotificationPreferences.
+         */
+        static fromJSON(jsonData: Object): NotificationPreferences;
     }
     
     export class UnmutedConversation {
@@ -4235,8 +4339,8 @@ export class ConversationsRequestBuilder {
         /** @private */ WithTags: boolean;
         /** @private */ groupTags: Array<String>;
         /** @private */ userTags: Array<String>;
-        /** @private */ includeBlockedUsers: boolean;
-        /** @private */ withBlockedInfo: boolean;
+        /** @private */ IncludeBlockedUsers: boolean;
+        /** @private */ WithBlockedInfo: boolean;
         /**
             *
             * @param {number} limit
@@ -4284,16 +4388,34 @@ export class ConversationsRequestBuilder {
         public setUserTags(userTags: Array<String>): this;
         /**
             * A method to include blocked users in the list of conversations.
-            * @param {boolean} userTags
+            * @param {boolean} _includeBlockedUsers
+            * @returns
+            * @deprecated This method is deprecated as of version 4.0.10 due to newer method 'includeBlockedUsers'.
+            * It will be removed in subsequent versions.
+        */
+        public setIncludeBlockedUsers(_includeBlockedUsers: boolean): this;
+
+        /**
+            * A method to include blocked users in the list of conversations.
+            * @param {boolean} _includeBlockedUsers
             * @returns
         */
-        setIncludeBlockedUsers(_includeBlockedUsers: any): this;
+        public includeBlockedUsers(_includeBlockedUsers: boolean): this;
+
         /**
             * A method to include blocked users information in the list of conversations.
-            * @param {boolean} userTags
+            * @param {boolean} _withBlockedInfo
+            * @returns
+            * @deprecated This method is deprecated as of version 4.0.10 due to newer method 'withBlockedInfo'.
+            * It will be removed in subsequent versions.
+        */
+        public setWithBlockedInfo(_withBlockedInfo: boolean): this;
+        /**
+            * A method to include blocked users information in the list of conversations.
+            * @param {boolean} _withBlockedInfo
             * @returns
         */
-        setWithBlockedInfo(_withBlockedInfo: any): this;
+        public withBlockedInfo(_withBlockedInfo: boolean): this;
         /**
             * This method will return an object of the ConversationsRequest class.
             * @returns {ConversationsRequest}
