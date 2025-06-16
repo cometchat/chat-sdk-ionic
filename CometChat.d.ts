@@ -2353,6 +2353,7 @@ export const MessageConstatnts: {
             HAS_MENTIONS: string;
             HAS_REACTIONS: string;
             MENTIONED_UIDS: string;
+            ATTACHMENT_TYPES: string;
         };
     };
 };
@@ -2861,6 +2862,12 @@ export const AI_FEATURE_ACCESSIBLE = "features.ai.accessible";
 export const AI_FEATURE_ENABLED = "features.ai.enabled";
 export const AI_SLUG_ACCESSIBLE = "features.ai.%s.accessible";
 export const AI_SLUG_ENABLED = "features.ai.%s.enabled";
+export enum AttachmentType {
+    IMAGE = "image",
+    VIDEO = "video",
+    AUDIO = "audio",
+    FILE = "file"
+}
 
 export const validateQuestion: (question: any) => CometChatException;
 
@@ -4630,6 +4637,11 @@ export class MessagesRequest {
             */
         isInteractionGoalCompletedOnly(): boolean;
         /**
+            * Returns the list of selected attachment types used for filtering messages.
+            * @return {Array<AttachmentTypes>}
+         */
+        getAttachmentTypes(): Array<AttachmentType>;
+        /**
             * Get list of next messages based on the parameters specified in MessagesRequestBuilder class. The Developer need to call this method repeatedly using the same object of MessagesRequest class to get paginated list of message.
             * @returns {Promise<BaseMessage[] | []>}
          */
@@ -4668,7 +4680,8 @@ export class MessagesRequestBuilder {
         /** @private */ HasLinks?: boolean;
         /** @private */ HasMentions?: boolean;
         /** @private */ HasReactions?: boolean;
-        /** @private */ mentionedUIDs?: Array<String>;        
+        /** @private */ mentionedUIDs?: Array<String>;     
+        /** @private */ attachmentTypes?: Array<AttachmentType>;   
         /**
             * A method to set limit for the number of messages returned in a single iteration. A maximum of 100 messages can fetched in a single iteration.
             * @param {number} limit
@@ -4831,6 +4844,12 @@ export class MessagesRequestBuilder {
             * @returns
          */
         setInteractionGoalCompletedOnly(interactionGoalCompletedOnly?: boolean): this;
+        /**
+            * Filters messages by specific attachment types.
+            * @param {Array<AttachmentTyes>} attachmentTypes
+            * @returns
+         */
+        setAttachmentTypes(attachmentTypes: Array<AttachmentType>): this;
         /**
             * This method will return an object of the MessagesRequest class.
             * @returns {MessagesRequest}
